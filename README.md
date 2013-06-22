@@ -9,7 +9,7 @@ Before any analysis, it's helpful to validate the data. What is the distribution
 
 ![](http://minimaxir.com/img/cnn_Likes_Histogram.png)
 
-The data is *very* right-skewed, with most of the data points centered around 2,500 Likes. This behavior isn't surprising; news posts don't go viral every time they're posted, but it could be helpful in the analysis.
+The data is *very* right-skewed, with most of the data points centered around 1,000 Likes. This behavior isn't surprising; news posts don't go viral every time they're posted, but it could be helpful in the analysis.
 
 The keywords, which for this analysis are *any words containing a capital letter*, are extracted from the post Messages for each Status update and are subsequently tallied. Keywords which appear on atleast 30 different status updates are significant enough to provide useful data for analysis. For CNN, these 93 keywords are:
 
