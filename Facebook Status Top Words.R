@@ -1,4 +1,4 @@
-username <- "nytimes"
+username <- "cnn"
 
 start.date <- strptime("2012-06-01 00:00:00", "%Y-%m-%d %H:%M:%S")
 
@@ -19,7 +19,7 @@ top.words <- word.freq[which(word.freq>30 & nchar(names(word.freq)) >= 2)]
 
 ## construct data frame for regression
 
-y <- t(apply(as.array(words.list),1,function(words) {return (ifelse(names(top.words) %in% words[[1]],".Y",".N")) }))
+y <- t(apply(as.array(words.list),1,function(words) {return (ifelse(names(top.words) %in% words[[1]],"Y","N")) }))
 colnames(y) <- names(top.words)
 
 data <- data.frame(numLikes=data$numLikes,time=as.numeric(strptime(data$time, "%Y-%m-%d %H:%M:%S")-start.date)/24,type=data$type,y)
@@ -34,11 +34,11 @@ sum.step.1 <- summary(step.1)
 sum.step.1.filter <- sum.step.1$coef[which(sum.step.1$coef[,4]<0.05),]
 sum.step.1.filter <- sum.step.1.filter[order(-sum.step.1.filter[,1]),]
 
-## clean variables names up slightly
+## Remove "Y" and remove non-keyword variables for display purposes
 
-rownames(sum.step.1.filter) <- apply(as.array(strsplit(rownames(sum.step.1.filter),".",fixed=T)),1, function(x) {return(x[[1]][1])})
-sum.step.1.sanitized <- sum.step.1.filter[-which(rownames(sum.step.1.filter) %in% c("(Intercept)","typephoto","typevideo","time")),]
+sum.step.1.filter <- sum.step.1.filter[-which(rownames(sum.step.1.filter) %in% c("(Intercept)","typephoto","typevideo","time")),]
+rownames(sum.step.1.filter) <- apply(as.array((rownames(sum.step.1.filter))),1, function(x) {return(substr(x,1,nchar(x)-1))})
 
-round(sum.step.1.sanitized[,c(1,4)],2) # final coefficients
+round(sum.step.1.filter[,c(1,4)],2) # final coefficients
 
 # write.table(x,"clipboard",sep='\t\t\t', quote=F)  method to write table for copy-paste to Markdown

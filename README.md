@@ -1,5 +1,6 @@
-The code and data used to write my blog post "Predicting the Number of Likes on a Facebook Status Through Statistical Keyword Analysis" at http://minimaxir.com/2013/06/big-social-data/
+The code and data used to write my blog post "Predicting the Number of Likes on a Facebook Status With Statistical Keyword Analysis" at http://minimaxir.com/2013/06/big-social-data/
 
+An explanation of the derivation of the analysis is below.
 
 ----------
 
@@ -9,6 +10,8 @@ Before any analysis, it's helpful to validate the data. What is the distribution
 The data is *very* right-skewed, with most of the data points centered around 2,500 Likes. This behavior isn't surprising; news posts don't go viral every time they're posted, but it could be helpful in the analysis.
 
 The keywords, which for this analysis are *any words containing a capital letter*, are extracted from the post Messages for each Status update and are subsequently tallied. Keywords which appear on atleast 30 different status updates are significant enough to provide useful data for analysis. For CNN, these 93 keywords are:
+
+![](http://minimaxir.com/img/cnn_Frequent.png)
 
 CNN certainly posts about a variety of subjects.
 
@@ -31,17 +34,17 @@ Now, we can regress NumLikes on *time*, *type*, and the 93 keyword variables.
     time		-0.2369	 	0.2557 		-0.927 	0.354151
     typephoto 	2095.6119	80.0651  	26.174  < 2e-16	 ***
     typevideo  	381.9977	77.3933   	4.936 	8.38e-07 ***
-    CNN.Y  		-19.3910	83.0820  	-0.233 	0.815468
-    See.Y  		-40.9881	60.4718  	-0.678 	0.497943
-    The.Y  		-11.9820	70.4743  	-0.170 	0.865005
-    Do.Y  		153.5012	93.3257   	1.645 	0.100109 
+    CNNY  		-19.3910	83.0820  	-0.233 	0.815468
+    SeeY  		-40.9881	60.4718  	-0.678 	0.497943
+    TheY  		-11.9820	70.4743  	-0.170 	0.865005
+    DoY  		153.5012	93.3257   	1.645 	0.100109 
 
 	...
 
-    Bourdain.Y	2225.6932   653.4404   	3.406 	0.000667 ***
-    At.Y   		103.2626   	266.3599   	0.388 	0.698278
-    Did.Y 		-140.9736   260.6737  	-0.541 	0.588679
-    Dr.Y  		-127.2331   270.5502  	-0.470 	0.638189 
+    BourdainY	2225.6932   653.4404   	3.406 	0.000667 ***
+    AtY   		103.2626   	266.3599   	0.388 	0.698278
+    DidY 		-140.9736   260.6737  	-0.541 	0.588679
+    DrY  		-127.2331   270.5502  	-0.470 	0.638189 
 	-----
 	Residual standard error: 1424 on 3289 degrees of freedom
 	Multiple R-squared: 0.2745,	Adjusted R-squared: 0.2534 
@@ -60,6 +63,8 @@ We now have the secret to using keywords, right? Unfortunately, we're not done.
 
 How *accurately* does this model of using keywords predict the number of Likes received? Here's the residual plot of the actual number of Likes for a given status minus the predicted number of likes by the model.
 
+![](http://minimaxir.com/img/cnn_Residual_Plot.png)
+
 The good news is that there's no pattern amount the residuals, and that the majority are centered around 0 (Actual = Predicted). Unfortunately, the variance in the residuals is extremely high, from -4000 to 15000, which indicates that the model alone may not be robust enough to predict the number of Likes.
 
 The R-squared value of the model is 0.2745, i.e. the model explains 27.45% of the variation in the number of Likes on a status. Ideally, this value would be close to 1.0 (the model is perfect), but a R-squared value of 0.2745 by using a simple regression model and uncontrolled real-world data is *pretty damn good*.
@@ -69,6 +74,8 @@ We might not be able to determine the *exact* number of Likes predicted by a var
 We can improve the model by removing redundant and potentially harmful keyword variables, especially since we only chose the most frequently occurring keywords. We don't need *both* "BREAKING" and "NEWS" since they almost always appear together in the same status. The R programming language has a built-in brute-force optimizer that removes variables from a regression until removing variables stops improving the model.
 
 Running the optimizer reduces the number of keywords in the model from 93 to *26*. Out of those 26, we can only consider the variables which are statistically significant at the 95% confidence level (i.e. we have a less than 5% chance of failing to reject the hypothesis that the keyword variable has no effect on the regression). Therefore, here are the final influential keywords for CNN:
+
+![](http://minimaxir.com/img/cnn_Wordcloud.png)
 
     				+Likes			Pr(>|t|)
     Bourdain		1962.98			0
@@ -91,4 +98,4 @@ Running the optimizer reduces the number of keywords in the model from 93 to *26
     Travel			-988.99			0.02
 
 
-R-squared only changes slightly (0.267).
+R-squared only changes slightly (0.267). It's not a perfect analysis, but it's a very good analysis in lieu of perfect data.
