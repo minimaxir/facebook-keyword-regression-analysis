@@ -7,6 +7,8 @@ An explanation of the derivation of the analysis is below.
 
 Before any analysis, it's helpful to validate the data. What is the distribution of the number of Likes on a status? How many statuses have low numbers of likes? How many statuses have gone viral and have an absurdly large number of likes? After removing a few obvious outliers (such as CNN's [status urging fans to vote in the 2012 election](http://www.facebook.com/5550296508/posts/266768910110901) with *314,774* Likes), I've created a histogram of the data:
 
+![](http://minimaxir.com/img/cnn_Likes_Histogram.png)
+
 The data is *very* right-skewed, with most of the data points centered around 2,500 Likes. This behavior isn't surprising; news posts don't go viral every time they're posted, but it could be helpful in the analysis.
 
 The keywords, which for this analysis are *any words containing a capital letter*, are extracted from the post Messages for each Status update and are subsequently tallied. Keywords which appear on atleast 30 different status updates are significant enough to provide useful data for analysis. For CNN, these 93 keywords are:
